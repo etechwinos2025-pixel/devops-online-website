@@ -1,0 +1,9 @@
+aws_region             = "us-east-1"
+project_name           = "devops-online-website"
+environment            = "prod"
+domain_name            = "training.excelcloudsolutions.com"
+alternate_domain_names = []
+route53_zone_name      = "excelcloudsolutions.com."
+# route53_zone_id      = "Z01227532TJEJT7M5ZLVO"
+create_route53_zone    = false
+price_class            = "PriceClass_100"
