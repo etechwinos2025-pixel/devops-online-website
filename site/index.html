@@ -9,6 +9,8 @@
   <link rel="stylesheet" href="/css/styles.css" />
 </head>
 <body>
+  <canvas id="binary-bg" class="binary-bg" aria-hidden="true"></canvas>
+  <div class="page-content">
   <div class="top-bar">
     <div class="container">
       <span>Questions? Call <a href="tel:+13303913130" data-phone-tel><span data-phone-display>(330) 391-3130</span></a></span>
@@ -52,6 +54,49 @@
       </div>
       <div class="hero__logo-wrap">
         <img src="/assets/logo.png" alt="ExcelCloud DevOps online training platform" width="460" />
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--alt section--glass">
+    <div class="container">
+      <div class="section-head">
+        <p class="section-eyebrow">Learning in action</p>
+        <h2>Students building real DevOps skills</h2>
+        <p>Live cohorts, collaborative labs, and hands-on coding sessions — from your first pipeline to production deployments.</p>
+      </div>
+      <div class="learning-grid">
+        <article class="learning-card learning-card--featured reveal">
+          <img src="/assets/images/student-coding-1.jpg" alt="Student writing code on a laptop during DevOps training" loading="lazy" width="800" height="600" />
+          <div class="learning-card__overlay">
+            <span class="learning-card__tag">Live labs</span>
+            <h3>Code alongside expert instructors</h3>
+            <p>Build Docker containers, Kubernetes manifests, and CI/CD pipelines in real time.</p>
+          </div>
+        </article>
+        <article class="learning-card reveal reveal--delay-1">
+          <img src="/assets/images/student-coding-2.jpg" alt="Students collaborating on a coding project" loading="lazy" width="800" height="400" />
+          <div class="learning-card__overlay">
+            <span class="learning-card__tag">Teamwork</span>
+            <h3>Collaborative cohort learning</h3>
+            <p>Pair programming, code reviews, and group troubleshooting sessions.</p>
+          </div>
+        </article>
+        <article class="learning-card reveal reveal--delay-2">
+          <img src="/assets/images/student-coding-3.jpg" alt="Developer learning cloud and DevOps tools online" loading="lazy" width="800" height="400" />
+          <div class="learning-card__overlay">
+            <span class="learning-card__tag">Career ready</span>
+            <h3>From learner to engineer</h3>
+            <p>Portfolio projects that prove you can ship to the cloud.</p>
+          </div>
+        </article>
+      </div>
+      <div class="code-snippet reveal" aria-hidden="true">
+        <pre><code><span class="code-kw">pipeline</span> <span class="code-fn">deploy</span> {
+  <span class="code-key">stage</span>(<span class="code-str">'Build'</span>)  { <span class="code-fn">sh</span> <span class="code-str">'docker build -t app .'</span> }
+  <span class="code-key">stage</span>(<span class="code-str">'Test'</span>)   { <span class="code-fn">sh</span> <span class="code-str">'npm test'</span> }
+  <span class="code-key">stage</span>(<span class="code-str">'Deploy'</span>) { <span class="code-fn">sh</span> <span class="code-str">'kubectl apply -f k8s/'</span> }
+}</code></pre>
       </div>
     </div>
   </section>
@@ -175,7 +220,9 @@
       </div>
     </div>
   </footer>
+  </div>
   <script src="/js/config.js"></script>
+  <script src="/js/binary-bg.js"></script>
   <script src="/js/main.js"></script>
 </body>
 </html>
