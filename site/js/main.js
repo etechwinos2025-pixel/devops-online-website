@@ -16,6 +16,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  document.querySelectorAll("[data-site-url]").forEach((el) => {
+    const url = config.siteUrl || window.location.origin;
+    el.textContent = url.replace(/^https?:\/\//, "");
+    if (el.tagName === "A") el.href = url;
+  });
+
+  document.querySelectorAll("[data-company-url]").forEach((el) => {
+    const url = config.companyUrl || "https://www.excelcloudsolutions.com";
+    el.textContent = url.replace(/^https?:\/\//, "");
+    if (el.tagName === "A") el.href = url;
+  });
+
   const toggle = document.querySelector(".menu-toggle");
   const nav = document.querySelector(".nav");
 
