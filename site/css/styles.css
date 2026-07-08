@@ -36,6 +36,33 @@ a:hover { color: var(--white); }
 
 .container { width: min(1140px, 92vw); margin: 0 auto; }
 
+.top-bar {
+  background: var(--navy-light);
+  color: var(--muted);
+  font-size: 0.95rem;
+  padding: 0.55rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.top-bar .container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.top-bar a {
+  color: var(--blue);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.top-bar a:hover {
+  color: var(--white);
+  text-decoration: underline;
+}
+
 /* Header */
 .site-header {
   position: sticky;

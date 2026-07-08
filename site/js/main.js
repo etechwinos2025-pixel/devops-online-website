@@ -1,4 +1,21 @@
 document.addEventListener("DOMContentLoaded", () => {
+  const config = window.SITE_CONFIG || {};
+
+  document.querySelectorAll("[data-phone-display]").forEach((el) => {
+    if (config.phoneDisplay) el.textContent = config.phoneDisplay;
+  });
+
+  document.querySelectorAll("[data-phone-tel]").forEach((el) => {
+    if (config.phoneTel) el.href = `tel:${config.phoneTel}`;
+  });
+
+  document.querySelectorAll("[data-contact-email]").forEach((el) => {
+    if (config.contactEmail) {
+      el.textContent = config.contactEmail;
+      if (el.tagName === "A") el.href = `mailto:${config.contactEmail}`;
+    }
+  });
+
   const toggle = document.querySelector(".menu-toggle");
   const nav = document.querySelector(".nav");
 
@@ -22,6 +39,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const body = encodeURIComponent(
       `Name: ${name}\nEmail: ${email}\nCourse: ${course}\n\n${message}`
     );
-    window.location.href = `mailto:training@excelcloudsolutions.com?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:${config.contactEmail || "training@excelcloudsolutions.com"}?subject=${subject}&body=${body}`;
   });
 });
