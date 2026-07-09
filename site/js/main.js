@@ -62,6 +62,51 @@ document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("register-form");
   const formStatus = document.getElementById("form-status");
   const submitBtn = form?.querySelector('button[type="submit"]');
+  const courseSelect = form?.querySelector('[name="course"]');
+
+  const params = new URLSearchParams(window.location.search);
+  const courseParam = params.get("course");
+
+  const applyContactCourse = (course) => {
+    if (!course) return;
+    sessionStorage.setItem("contactCourse", course);
+
+    const banner = document.getElementById("contact-course-banner");
+    if (banner) {
+      banner.textContent = `You're inquiring about: ${course}`;
+      banner.hidden = false;
+    }
+
+    const email = config.contactEmail || "training@excelcloudsolutions.com";
+    const subject = encodeURIComponent(`Question about: ${course}`);
+    document.querySelectorAll("[data-contact-email]").forEach((el) => {
+      if (el.tagName === "A") el.href = `mailto:${email}?subject=${subject}`;
+    });
+  };
+
+  const onContactPage = document.getElementById("contact-course-banner");
+  if (onContactPage) {
+    if (courseParam) applyContactCourse(courseParam);
+    else if (sessionStorage.getItem("contactCourse")) {
+      applyContactCourse(sessionStorage.getItem("contactCourse"));
+    }
+  }
+
+  document.querySelectorAll(".contact-course-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const course = btn.getAttribute("data-course");
+      if (course) sessionStorage.setItem("contactCourse", course);
+    });
+  });
+
+  if (courseSelect && courseParam) {
+    for (const option of courseSelect.options) {
+      if (option.value === courseParam || option.text.includes(courseParam)) {
+        courseSelect.value = option.value;
+        break;
+      }
+    }
+  }
 
   const showStatus = (message, type) => {
     if (!formStatus) return;
