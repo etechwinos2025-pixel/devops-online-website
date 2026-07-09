@@ -7,5 +7,5 @@ window.SITE_CONFIG = {
   companyUrl: "https://www.excelcloudsolutions.com",
   companyDisplay: "www.excelcloudsolutions.com",
   programWeeks: 16,
-  apiUrl: "https://zizshjdgre.execute-api.us-east-1.amazonaws.com/register",
+  apiUrl: "https://www.training.excelcloudsolutions.com/api/register",
 };

@@ -133,13 +133,23 @@ document.addEventListener("DOMContentLoaded", () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-      const payload = await res.json();
+
+      let payload = {};
+      try {
+        payload = await res.json();
+      } catch {
+        throw new Error("Unexpected response from registration service. Please call (330) 391-3130.");
+      }
+
       if (!res.ok) throw new Error(payload.error || "Submission failed");
 
       form.reset();
       showStatus(payload.message || "Registration submitted successfully. We will contact you soon.", "success");
     } catch (err) {
-      showStatus(err.message || "Unable to submit. Please call (330) 391-3130.", "error");
+      const message = err.message === "Failed to fetch"
+        ? "Could not reach the registration service. Check your connection or call (330) 391-3130."
+        : (err.message || "Unable to submit. Please call (330) 391-3130.");
+      showStatus(message, "error");
     } finally {
       submitBtn.disabled = false;
     }

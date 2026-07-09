@@ -1,6 +1,10 @@
 locals {
   site_bucket_name = "${var.project_name}-site-${data.aws_caller_identity.current.account_id}"
   aliases          = distinct(concat([var.domain_name], var.alternate_domain_names))
+  registration_api_host = coalesce(
+    try(var.alternate_domain_names[0], null),
+    var.domain_name
+  )
 }
 
 data "aws_caller_identity" "current" {}

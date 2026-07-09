@@ -27,8 +27,8 @@ output "deploy_command" {
 }
 
 output "registration_api_url" {
-  description = "Base URL for registration form submissions"
-  value       = var.enable_registration_api ? "${aws_apigatewayv2_api.register[0].api_endpoint}/register" : ""
+  description = "Same-origin URL for registration form submissions"
+  value = var.enable_registration_api ? "https://${local.registration_api_host}/api/register" : ""
 }
 
 output "google_sheets_secret_arn" {

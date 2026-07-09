@@ -90,7 +90,7 @@ resource "aws_lambda_function" "register" {
       FROM_EMAIL        = var.ses_from_email
       GOOGLE_SHEET_ID   = var.google_sheet_id
       GOOGLE_SECRET_ARN = aws_secretsmanager_secret.google_sheets[0].arn
-      SHEET_RANGE       = "Registrations!A:G"
+      SHEET_RANGE       = "A:G"
     }
   }
 }
@@ -150,6 +150,22 @@ resource "aws_lambda_permission" "register_api" {
   function_name = aws_lambda_function.register[0].function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_apigatewayv2_api.register[0].execution_arn}/*/*"
+}
+
+resource "aws_apigatewayv2_route" "register_post_api" {
+  count = var.enable_registration_api ? 1 : 0
+
+  api_id    = aws_apigatewayv2_api.register[0].id
+  route_key = "POST /api/register"
+  target    = "integrations/${aws_apigatewayv2_integration.register[0].id}"
+}
+
+resource "aws_apigatewayv2_route" "register_options_api" {
+  count = var.enable_registration_api ? 1 : 0
+
+  api_id    = aws_apigatewayv2_api.register[0].id
+  route_key = "OPTIONS /api/register"
+  target    = "integrations/${aws_apigatewayv2_integration.register[0].id}"
 }
 
 resource "aws_ses_domain_identity" "site" {

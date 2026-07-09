@@ -21,7 +21,7 @@ NOTIFY_EMAIL = os.environ["NOTIFY_EMAIL"]
 FROM_EMAIL = os.environ["FROM_EMAIL"]
 GOOGLE_SHEET_ID = os.environ.get("GOOGLE_SHEET_ID", "")
 GOOGLE_SECRET_ARN = os.environ.get("GOOGLE_SECRET_ARN", "")
-SHEET_RANGE = os.environ.get("SHEET_RANGE", "Registrations!A:G")
+SHEET_RANGE = os.environ.get("SHEET_RANGE", "A:G")
 HEADERS = ["Submitted At", "Name", "Email", "Phone", "Program", "Experience", "Message"]
 
 CORS_HEADERS = {
@@ -78,7 +78,8 @@ def _append_to_sheet(row):
 
     creds = _get_google_credentials()
     if not creds:
-        raise RuntimeError("Google Sheets credentials are not configured.")
+        print("Google Sheets credentials are not configured; skipping sheet append")
+        return None
 
     service = build("sheets", "v4", credentials=creds, cache_discovery=False)
     sheets = service.spreadsheets()
@@ -86,9 +87,10 @@ def _append_to_sheet(row):
     existing = sheets.values().get(spreadsheetId=GOOGLE_SHEET_ID, range=SHEET_RANGE).execute()
     values = existing.get("values", [])
     if not values:
+        header_range = f"{SHEET_RANGE.split('!')[0]}!A1" if "!" in SHEET_RANGE else "A1"
         sheets.values().update(
             spreadsheetId=GOOGLE_SHEET_ID,
-            range=SHEET_RANGE.split("!")[0] + "!A1",
+            range=header_range,
             valueInputOption="RAW",
             body={"values": [HEADERS]},
         ).execute()
@@ -170,7 +172,12 @@ def _handle_register(data):
     }
 
     try:
-        sheet_values = _append_to_sheet(row)
+        sheet_values = None
+        try:
+            sheet_values = _append_to_sheet(row)
+        except Exception as exc:
+            print(f"Google Sheets append failed (continuing with email): {exc}")
+
         if sheet_values:
             csv_bytes = _values_to_csv(sheet_values)
         else:
@@ -199,7 +206,7 @@ def handler(event, context):
     if method != "POST":
         return _response(405, {"error": "Method not allowed"})
 
-    if not path.endswith("/register"):
+    if not path.endswith("/register") and not path.endswith("/api/register"):
         return _response(404, {"error": "Not found"})
 
     try:
