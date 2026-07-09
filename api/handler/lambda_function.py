@@ -19,6 +19,8 @@ secrets = boto3.client("secretsmanager", region_name=os.environ.get("AWS_REGION"
 
 NOTIFY_EMAIL = os.environ["NOTIFY_EMAIL"]
 FROM_EMAIL = os.environ["FROM_EMAIL"]
+SITE_URL = os.environ.get("SITE_URL", "https://www.training.excelcloudsolutions.com")
+CONTACT_PHONE = os.environ.get("CONTACT_PHONE", "(330) 391-3130")
 GOOGLE_SHEET_ID = os.environ.get("GOOGLE_SHEET_ID", "")
 GOOGLE_SECRET_ARN = os.environ.get("GOOGLE_SECRET_ARN", "")
 SHEET_RANGE = os.environ.get("SHEET_RANGE", "A:G")
@@ -149,6 +151,38 @@ def _send_notification(registration, csv_bytes):
     return result
 
 
+def _send_student_confirmation(registration):
+    first_name = registration["name"].split()[0] if registration["name"] else "there"
+    subject = "We received your DevOps training registration — ExcelCloud"
+    text_body = (
+        f"Hi {first_name},\n\n"
+        "Thank you for registering for ExcelCloud DevOps training!\n\n"
+        "We received your registration request:\n"
+        f"  Program: {registration['course']}\n"
+        f"  Experience level: {registration['experience']}\n\n"
+        "Our team will review your request and contact you within 1 business day "
+        "with enrollment details, schedule, and payment options.\n\n"
+        "If you have questions in the meantime:\n"
+        f"  Phone: {CONTACT_PHONE}\n"
+        f"  Email: {NOTIFY_EMAIL}\n"
+        f"  Website: {SITE_URL}\n\n"
+        "We look forward to helping you on your DevOps journey!\n\n"
+        "— ExcelCloud DevOps Training Team\n"
+    )
+
+    result = ses.send_email(
+        Source=FROM_EMAIL,
+        Destination={"ToAddresses": [registration["email"]]},
+        ReplyToAddresses=[NOTIFY_EMAIL],
+        Message={
+            "Subject": {"Data": subject, "Charset": "UTF-8"},
+            "Body": {"Text": {"Data": text_body, "Charset": "UTF-8"}},
+        },
+    )
+    print(f"Student confirmation sent MessageId={result.get('MessageId')} to={registration['email']}")
+    return result
+
+
 def _handle_register(data):
     name = (data.get("name") or "").strip()
     email = (data.get("email") or "").strip()
@@ -183,6 +217,11 @@ def _handle_register(data):
         else:
             csv_bytes = _values_to_csv([HEADERS, row])
         _send_notification(registration, csv_bytes)
+        try:
+            _send_student_confirmation(registration)
+        except ClientError as exc:
+            err = exc.response.get("Error", {})
+            print(f"Student confirmation SES error: {err}")
     except ClientError as exc:
         err = exc.response.get("Error", {})
         print(f"SES error: {err}")
@@ -191,7 +230,10 @@ def _handle_register(data):
         print(f"Registration handler error: {exc}")
         return _response(500, {"error": "Unable to submit registration. Please call (330) 391-3130."})
 
-    return _response(200, {"ok": True, "message": "Registration submitted successfully. We will contact you soon."})
+    return _response(200, {
+        "ok": True,
+        "message": "Registration submitted successfully. Check your email for confirmation—we'll be in touch soon.",
+    })
 
 
 def handler(event, context):

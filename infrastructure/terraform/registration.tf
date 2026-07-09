@@ -88,6 +88,8 @@ resource "aws_lambda_function" "register" {
     variables = {
       NOTIFY_EMAIL      = var.registration_notify_email
       FROM_EMAIL        = var.ses_from_email
+      SITE_URL          = "https://${local.registration_api_host}"
+      CONTACT_PHONE     = "(330) 391-3130"
       GOOGLE_SHEET_ID   = var.google_sheet_id
       GOOGLE_SECRET_ARN = aws_secretsmanager_secret.google_sheets[0].arn
       SHEET_RANGE       = "A:G"
