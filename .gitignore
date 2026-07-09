@@ -1,4 +1,7 @@
 .terraform/
+api/handler/build/
+api/handler/lambda.zip
+infrastructure/terraform/register_lambda.zip
 *.tfstate
 *.tfstate.*
 terraform.tfvars

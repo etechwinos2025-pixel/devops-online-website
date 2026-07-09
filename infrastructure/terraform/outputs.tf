@@ -25,3 +25,17 @@ output "acm_certificate_arn" {
 output "deploy_command" {
   value = "aws s3 sync site/ s3://${aws_s3_bucket.site.id}/ --delete && aws cloudfront create-invalidation --distribution-id ${aws_cloudfront_distribution.site.id} --paths '/*'"
 }
+
+output "registration_api_url" {
+  description = "Base URL for registration form submissions"
+  value       = var.enable_registration_api ? "${aws_apigatewayv2_api.register[0].api_endpoint}/register" : ""
+}
+
+output "google_sheets_secret_arn" {
+  description = "Store Google service account JSON in this secret"
+  value       = var.enable_registration_api ? aws_secretsmanager_secret.google_sheets[0].arn : ""
+}
+
+output "google_sheets_secret_name" {
+  value = var.enable_registration_api ? aws_secretsmanager_secret.google_sheets[0].name : ""
+}

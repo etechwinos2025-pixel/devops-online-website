@@ -60,17 +60,43 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   const form = document.getElementById("register-form");
-  form?.addEventListener("submit", (e) => {
+  const formStatus = document.getElementById("form-status");
+  const submitBtn = form?.querySelector('button[type="submit"]');
+
+  const showStatus = (message, type) => {
+    if (!formStatus) return;
+    formStatus.textContent = message;
+    formStatus.className = `form-status is-visible form-status--${type}`;
+  };
+
+  form?.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const data = new FormData(form);
-    const name = data.get("name");
-    const email = data.get("email");
-    const course = data.get("course");
-    const message = data.get("message") || "";
-    const subject = encodeURIComponent(`DevOps Training Registration — ${course}`);
-    const body = encodeURIComponent(
-      `Name: ${name}\nEmail: ${email}\nCourse: ${course}\n\n${message}`
-    );
-    window.location.href = `mailto:${config.contactEmail || "training@excelcloudsolutions.com"}?subject=${subject}&body=${body}`;
+    const apiUrl = config.apiUrl;
+    const data = Object.fromEntries(new FormData(form).entries());
+
+    if (!apiUrl) {
+      showStatus("Registration API is not configured yet. Please call us or email training@excelcloudsolutions.com.", "error");
+      return;
+    }
+
+    submitBtn.disabled = true;
+    showStatus("Submitting your registration...", "success");
+
+    try {
+      const res = await fetch(apiUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      const payload = await res.json();
+      if (!res.ok) throw new Error(payload.error || "Submission failed");
+
+      form.reset();
+      showStatus(payload.message || "Registration submitted successfully. We will contact you soon.", "success");
+    } catch (err) {
+      showStatus(err.message || "Unable to submit. Please call (330) 391-3130.", "error");
+    } finally {
+      submitBtn.disabled = false;
+    }
   });
 });

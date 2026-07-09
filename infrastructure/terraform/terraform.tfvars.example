@@ -6,4 +6,9 @@ alternate_domain_names = ["www.training.excelcloudsolutions.com"]
 route53_zone_name      = "excelcloudsolutions.com."
 # route53_zone_id      = "Z01227532TJEJT7M5ZLVO"
 create_route53_zone    = false
-price_class            = "PriceClass_100"
+price_class               = "PriceClass_100"
+
+enable_registration_api   = true
+registration_notify_email = "training@excelcloudsolutions.com"
+ses_from_email            = "noreply@excelcloudsolutions.com"
+# google_sheet_id         = "your-google-sheet-id"

@@ -50,3 +50,33 @@ variable "price_class" {
   type        = string
   default     = "PriceClass_100"
 }
+
+variable "enable_registration_api" {
+  description = "Deploy API + Lambda for registration form (SES email + Google Sheets)"
+  type        = bool
+  default     = true
+}
+
+variable "registration_notify_email" {
+  description = "Email address that receives registration notifications"
+  type        = string
+  default     = "training@excelcloudsolutions.com"
+}
+
+variable "ses_from_email" {
+  description = "Verified SES sender address"
+  type        = string
+  default     = "noreply@excelcloudsolutions.com"
+}
+
+variable "google_sheet_id" {
+  description = "Google Sheet ID for registration log (leave empty until configured)"
+  type        = string
+  default     = ""
+  sensitive   = true
+}
+
+variable "google_sheets_secret_name" {
+  type    = string
+  default = "devops-online-website/google-sheets"
+}
