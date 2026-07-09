@@ -17,14 +17,16 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   document.querySelectorAll("[data-site-url]").forEach((el) => {
-    const url = config.siteUrl || window.location.origin;
-    el.textContent = url.replace(/^https?:\/\//, "");
+    const url = config.siteUrl || "https://www.training.excelcloudsolutions.com";
+    const display = config.siteDisplay || url.replace(/^https?:\/\//, "");
+    el.textContent = display;
     if (el.tagName === "A") el.href = url;
   });
 
   document.querySelectorAll("[data-company-url]").forEach((el) => {
     const url = config.companyUrl || "https://www.excelcloudsolutions.com";
-    el.textContent = url.replace(/^https?:\/\//, "");
+    const display = config.companyDisplay || url.replace(/^https?:\/\//, "");
+    el.textContent = display;
     if (el.tagName === "A") el.href = url;
   });
 
